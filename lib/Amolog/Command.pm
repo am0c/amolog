@@ -6,11 +6,13 @@ use List::Gather;
 
 use Data::Dump qw(dump);
 
+no strict 'subs';
+
 sub run {
     my $class = shift;
     my @args = @_;
     my @tokens = lex( @args );
-    return parse( @tokens );
+    dump parse( @tokens );
 }
 
 sub lex {
@@ -43,9 +45,73 @@ sub lex {
     }
 }
 
+*parse = Amolog::Command::parser::parse;
+
+
+package Amolog::Command::parser;
+
+our @token;
+
 sub parse {
-    dump @_;
-    ()
+    @token = @_;
+    cond_or();
+}
+
+sub cond_or {
+    my @res = cond_and();
+    while (look('Or')) {
+        push @res, match('Or');
+        push @res, cond_and();
+    }
+    return @res > 1 ? \@res : $res[0];
+}
+
+sub cond_and {
+    my @res = cond_list();
+    while (look('And')) {
+        push @res, match('And');
+        push @res, cond();
+    }
+    return @res > 1 ? \@res : $res[0];
+}
+
+sub cond_list {
+    my @res;
+    if (look('ParenOpen')) {
+        match('ParenOpen');
+        @res = cond_or();
+        match('ParenClose');
+    }
+    else {
+        while (look('Cond')) {
+            push @res, match('Cond');
+        }
+    }
+    return @res > 1 ? \@res : $res[0];
+}
+
+sub cond {
+    match('Cond');
+}
+
+sub match {
+    my $expect = shift;
+    my $top = $token[0];
+    if ($top =~ /^$expect/) {
+        return shift @token;
+    }
+    else {
+        die "$expect expected. but got $top";
+    }
+}
+
+sub look {
+    my @expect = @_;
+    no warnings 'uninitialized';
+    for (0 .. $#expect) {
+        return unless $token[$_] =~ /^$expect[$_]/;
+    }
+    return 1;
 }
 
 1;
