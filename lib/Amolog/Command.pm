@@ -1,4 +1,5 @@
 package Amolog::Command;
+use 5.014;
 use warnings;
 use strict;
 
@@ -14,36 +15,28 @@ sub run {
 sub lex {
     my @args = @_;
     my @tokens;
-    while ($_ = shift @args) {
-        if (/^-(day|date|month|year)$/) {
-            my $range = shift @args;
-            push @tokens, "CondDate";
-        }
-        elsif (/^-text$/) {
-            my $text = shift @args;
-            push @tokens, "CondText";
-        }
-        elsif (/^-(user|who)$/) {
-            my $user = shift @args;
-            push @tokens, "CondUser";
-        }
-        elsif (/^-(!|n|not)$/) {
-            push @tokens, "Not";
-        }
-        elsif (/^-(a|and)$/) {
-            push @tokens, "And";
-        }
-        elsif (/^-(o|or)$/) {
-            push @tokens, "Or";
-        }
-        elsif ($_ eq "(") {
-            push @tokens, "ParenOpen";
-        }
-        elsif ($_ eq ")") {
-            push @tokens, "ParenClose";
-        }
-        else {
-            die "Unexpected option: $_";
+    while (my $line = shift @args) {
+        for ($line) {
+            when ([qw/ -day -date -month -year /]) {
+                my $range = shift @args;
+                push @tokens, "CondDate";
+            }
+            when ([qw/ -text /]) {
+                my $text = shift @args;
+                push @tokens, "CondText";
+            }
+            when ([qw/ -user -who /]) {
+                my $user = shift @args;
+                push @tokens, "CondUser";
+            }
+            push @tokens, "Not"        when /^-(!|n|not)$/;
+            push @tokens, "And"        when /^-(a|and)$/;
+            push @tokens, "Or"         when /^-(o|or)$/;
+            push @tokens, "ParenOpen"  when "(";
+            push @tokens, "ParenClose" when ")";
+            default {
+                die "Unexpected option: $_";
+            }
         }
     }
     @tokens;
