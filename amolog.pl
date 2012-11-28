@@ -9,6 +9,9 @@ BEGIN {
 use Amolog::Command;
 Amolog::Command->run( @ARGV );
 
+
+__END__
+
 =pod
 
 =head1 NAME
