@@ -5,6 +5,7 @@ use strict;
 use Data::Dump qw(dump);
 
 sub run {
+    my $class = shift;
     my @args = @_;
     my @tokens = lex( @args );
     return parse( @tokens );
