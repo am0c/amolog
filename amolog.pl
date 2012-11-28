@@ -45,4 +45,19 @@ use strict;
       -a \( -user 'am0c' -o -user 'jeen' \)  \
       -a -not -today
 
+=head1 OPTION
+
+=over
+
+=item -use
+
+C<-use> loads adapter plugin and imports command line options.
+There is default options from base class L<::Default>.
+
+=item -date
+
+It takes one paramter, it can be range or time format.
+
+=back
+
 =end
