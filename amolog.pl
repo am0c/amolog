@@ -2,6 +2,13 @@
 use warnings;
 use strict;
 
+BEGIN {
+  if ($ENV{DEVELOPMENT}) { use lib 'lib' }
+}
+
+use Amolog::Command;
+Amolog::Command->run( @ARGV );
+
 =pod
 
 =head1 NAME
