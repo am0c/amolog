@@ -71,4 +71,4 @@ It takes one paramter, it can be range or time format.
 
 =back
 
-=end
+=cut
