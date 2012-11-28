@@ -1,4 +1,7 @@
 package Amolog::Command;
+use warnings;
+use strict;
+
 use Data::Dump qw(dump);
 
 sub run {
