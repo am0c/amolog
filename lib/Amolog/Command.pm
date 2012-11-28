@@ -70,7 +70,7 @@ sub cond_and {
     my @res = cond_list();
     while (look('And')) {
         push @res, match('And');
-        push @res, cond();
+        push @res, cond_list();
     }
     return @res > 1 ? \@res : $res[0];
 }
