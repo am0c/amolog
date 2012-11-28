@@ -24,6 +24,7 @@ sub lex {
             push @tokens, "CondText";
         }
         elsif (/^-(user|who)$/) {
+            my $user = shift @args;
             push @tokens, "CondUser";
         }
         elsif (/^-(!|n|not)$/) {
