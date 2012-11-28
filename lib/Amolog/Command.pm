@@ -77,15 +77,28 @@ sub cond_and {
 
 sub cond_list {
     my @res;
+    while (my @r = cond_factor()) {
+        push @res, @r;
+    }
+    return @res > 1 ? \@res : $res[0];
+}
+
+sub cond_factor {
+    my @res;
     if (look('ParenOpen')) {
         match('ParenOpen');
         @res = cond_or();
         match('ParenClose');
     }
+    elsif (look('Not')) {
+        push @res, match('Not');
+        push @res, cond_factor();
+    }
+    elsif (look('Cond')) {
+        @res = cond();
+    }
     else {
-        while (look('Cond')) {
-            push @res, match('Cond');
-        }
+        return;
     }
     return @res > 1 ? \@res : $res[0];
 }
