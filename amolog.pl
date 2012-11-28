@@ -4,6 +4,10 @@ use strict;
 
 =pod
 
+=head1 NAME
+
+amolog - grep any kind of logs
+
 =head1 SYNOPSIS
 
     # select adapter
